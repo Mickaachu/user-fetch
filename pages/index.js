@@ -3,22 +3,8 @@ import { useState, useEffect } from 'react'
 
 const Home = () => {
   const [users, setUser] = useState([])
-  const searchBar = () => {
-    const [searchResult, setSearchResult] = useState([])
-    const [searchInput, setSearchInput] = useState({})
-    const [search, setSearch] = useState('')
-    
-    const handleInput = (e) => {
-        let {name, value} = e.target
-        setSearchInput({...searchInput, [name]: value})
-        setSearch(e.target.value)
-    }
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        setSearchResult(users.filter(user => user.name.toLowerCase().includes(search.toLowerCase())))        
-        
-      }
- 
+  const [search, setSearch] = useState('')
+
   useEffect(() => {
     fetch('https://randomuser.me/api/?results=100')
       .then((res) => res.json())
@@ -32,22 +18,22 @@ const Home = () => {
   return (
     <div className={styles.container}>
       <h1>Home Page</h1>
-      <form onSubmit={handleSubmit} value={search} name="search" className="searchBar" onChange={handleInput}>
-            <input type="text" placeholder="Search" />
-            <button>Search</button>
-      </form>
+      <input placeholder='Seach' onChange={e => setSearch(e.target.value)}></input>
       {
-        users.results && users.results.map((result) => (
-          <div key={result.login.uuid}>
-            <img src={result.picture.large} alt={result.name.first} />
-            <h3>{result.name.first}</h3>
-            <p>{result.email}</p>
+        users.results.filter((user) =>
+          user.name.first.toLowerCase().includes(search.toLowerCase())
+        ).map((user) => (
+          <div key={user.login.uuid}>
+            <img src={user.picture.large} alt="" />
+            <h3>{user.name.first}</h3>
+            <p>{user.email}</p>
           </div>
+
         ))
 
       }
     </div>
   )
 }
-}
+
 export default Home;
